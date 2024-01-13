@@ -3,6 +3,8 @@
 namespace Supervisor\Configuration\Writer;
 
 use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\UnableToWriteFile;
 use Supervisor\Configuration\Configuration;
 use Supervisor\Configuration\Exception\WriterException;
 
@@ -40,8 +42,13 @@ final class FlysystemWriter extends AbstractWriter
     {
         $ini = $this->getRenderer()->render($configuration->toArray());
 
-        if (false === $result = $this->filesystem->put($this->file, $ini)) {
-            throw new WriterException(sprintf('Cannot write configuration into file %s', $this->file));
+        try {
+            $this->filesystem->write($this->file, $ini);
+        } catch (UnableToWriteFile|FilesystemException $exception) {
+            throw new WriterException(
+                sprintf('Cannot write configuration into file %s', $this->file),
+                previous: $exception
+            );
         }
     }
 }

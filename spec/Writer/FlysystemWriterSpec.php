@@ -3,6 +3,7 @@
 namespace spec\Supervisor\Configuration\Writer;
 
 use League\Flysystem\Filesystem;
+use League\Flysystem\UnableToWriteFile;
 use PhpSpec\ObjectBehavior;
 use Supervisor\Configuration\Configuration;
 use Supervisor\Configuration\Writer\FlysystemWriter;
@@ -31,8 +32,7 @@ class FlysystemWriterSpec extends ObjectBehavior
         $configuration->toArray()
             ->willReturn([]);
 
-        $filesystem->put('file', '')
-            ->willReturn(true);
+        $filesystem->write('file', '');
 
         $this->write($configuration)
             ->shouldReturn(null);
@@ -45,8 +45,7 @@ class FlysystemWriterSpec extends ObjectBehavior
         $configuration->toArray()
             ->willReturn([]);
 
-        $filesystem->put('file', '')
-            ->willReturn(false);
+        $filesystem->write('file', '')->willThrow(new UnableToWriteFile('Failed'));
 
         $this->shouldThrow(WriterException::class)
             ->duringWrite($configuration);
