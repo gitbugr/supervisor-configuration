@@ -1,5 +1,5 @@
 {
-    "name": "supervisorphp/configuration",
+    "name": "gitbugr/supervisor-configuration",
     "description": "Manage Supervisor configuration in PHP",
     "license": "MIT",
     "keywords": ["supervisor", "configuration"],
